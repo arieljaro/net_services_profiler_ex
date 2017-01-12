@@ -3,9 +3,9 @@
 import logging
 import sys
 import json
-import os
 from enum import Enum
 
+from nsp_test_runners.abstract_test_runner import AbstractTestRunner
 from nsp_test_runners.dns_test_runner import DNSTestRunner
 from nsp_test_runners.http_test_runner import HTTPTestRunner
 from nsp_test_runners.https_test_runner import HTTPSTestRunner
@@ -48,10 +48,19 @@ def run_tests(tests, history, nsp_alert_sender):
 
         for test_target in method_targets:
             target_name = test_target['target_name']
-            target_parameters = test_target['parameters']
+            test_parameters = test_target['parameters']
+
+            # TODO: implement target history lookup
+            target_history = dict()
 
             logging.info('Handling {} test on target {} with parameters {}'.format(
-                method_name, target_name, target_parameters))
+                method_name, target_name, test_parameters))
+
+            if method_name == 'DNS':
+                test_runner = method_runner(target_name, test_parameters, target_history)
+                result = test_runner.run_test()
+                logging.debug('Test result = {}'.format(result))
+                logging.info(test_runner.get_test_descriptive_result())
 
 
 def main(args):

@@ -17,7 +17,12 @@
         {
           "target_name": "yahoo.com",
           "parameters": {}
+        },
+        {
+          "target_name": "unexisting_url.com",
+          "parameters": {}
         }
+
       ]
     },
     {
