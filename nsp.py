@@ -36,6 +36,11 @@ def _load_history_file(history_filename):
     return history
 
 
+def _save_history_file(history, history_filename):
+    with open(history_filename, 'w') as history_file:
+        json.dump(history, history_file)
+
+
 def run_tests(tests, history, nsp_alert_sender):
     for test_method in tests:
         method_name = test_method['method']
@@ -46,8 +51,11 @@ def run_tests(tests, history, nsp_alert_sender):
             target_name = test_target['target_name']
             test_parameters = test_target['parameters']
 
-            # TODO: implement target history lookup
-            target_history = dict()
+            # check if target history exists, otherwise start a new empty dict
+            try:
+                target_history = history[method_name][target_name]
+            except KeyError:
+                target_history = dict()
 
             logging.info('Handling {} test on target {} with parameters {}'.format(
                 method_name, target_name, test_parameters))
@@ -56,8 +64,17 @@ def run_tests(tests, history, nsp_alert_sender):
                 test_runner = method_runner(target_name, test_parameters, target_history)
                 result = test_runner.run_test()
                 logging.debug('Test result = {}'.format(result))
+
                 if result:
                     logging.info(test_runner.get_test_descriptive_result())
+
+                    # update history
+                    test_stats = test_runner.get_test_stats()
+                    if len(test_stats) > 0:
+                        method_dict = history.setdefault(method_name, dict())
+                        target_stats = method_dict.setdefault(target_name, list())
+                        target_stats.append(test_stats)
+
                 else:
                     logging.error(test_runner.get_test_descriptive_result())
                     nsp_alert_sender.send_alert(test_runner.get_test_descriptive_result())
@@ -91,6 +108,8 @@ def main(args):
     nsp_alert_sender = NSPAlertSender(nsp_alerts_email, nsp_email_pwd, alert_email_targets)
 
     run_tests(tests, history, nsp_alert_sender)
+
+    _save_history_file(history, history_filename)
 
 
 if __name__ == '__main__':
