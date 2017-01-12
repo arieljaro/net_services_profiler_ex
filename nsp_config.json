@@ -1,0 +1,48 @@
+{
+  "general": {
+    "alert_email_targets": [
+      "arieljaro@gmail.com"
+    ],
+    "nsp_email_address": "alerts@nsp.io",
+    "history_file": "nsp_history.json"
+  },
+  "tests": [
+    {
+      "method": "DNS",
+      "targets": [
+        {
+          "target_name": "accezz.io",
+          "parameters": {}
+        },
+        {
+          "target_name": "yahoo.com",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "method": "HTTP",
+      "targets": [
+        {
+          "target_name": "http://mysite.com/getmyfile",
+          "parameters": {
+            "latency_threshold": 1,
+            "bandwidth_mbps_threshold": null
+          }
+        }
+      ]
+    },
+    {
+      "method": "HTTPS",
+      "targets": [
+        {
+          "target_name": "https://mysite.com/mygreatservice",
+          "parameters": {
+            "latency_threshold": 10,
+            "bandwidth_mbps_threshold": 1
+          }
+        }
+      ]
+    }
+  ]
+}
