@@ -60,7 +60,12 @@ def run_tests(tests, history, nsp_alert_sender):
                 test_runner = method_runner(target_name, test_parameters, target_history)
                 result = test_runner.run_test()
                 logging.debug('Test result = {}'.format(result))
-                logging.info(test_runner.get_test_descriptive_result())
+                if result:
+                    logging.info(test_runner.get_test_descriptive_result())
+                else:
+                    logging.error(test_runner.get_test_descriptive_result())
+                    nsp_alert_sender.send_alert(test_runner.get_test_descriptive_result())
+                    logging.debug('Sent the email alerts successfully')
 
 
 def main(args):
@@ -79,6 +84,7 @@ def main(args):
         logging.debug('Configuration file {} loaded'.format(config_filename))
 
     nsp_alerts_email = config['general']['nsp_email_address']
+    nsp_email_pwd = config['general']['nsp_email_pwd']
     alert_email_targets = config['general']['alert_email_targets']
     history_filename = config['general']['history_file']
     tests = config['tests']
@@ -86,7 +92,7 @@ def main(args):
     # load history file or initialize new dict if it does not exist
     history = _load_history_file(history_filename)
 
-    nsp_alert_sender = NSPAlertSender(nsp_alerts_email, alert_email_targets)
+    nsp_alert_sender = NSPAlertSender(nsp_alerts_email, nsp_email_pwd, alert_email_targets)
 
     run_tests(tests, history, nsp_alert_sender)
 

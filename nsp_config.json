@@ -3,7 +3,8 @@
     "alert_email_targets": [
       "arieljaro@gmail.com"
     ],
-    "nsp_email_address": "alerts@nsp.io",
+    "nsp_email_address": "nsp.alerts123@gmail.com",
+    "nsp_email_pwd": "nspEmail123",
     "history_file": "nsp_history.json"
   },
   "tests": [
