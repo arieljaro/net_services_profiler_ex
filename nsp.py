@@ -60,24 +60,23 @@ def run_tests(tests, history, nsp_alert_sender):
             logging.debug('Handling {} test on target {} with parameters {}'.format(
                 method_name, target_name, test_parameters))
 
-            if method_name in ['DNS', 'HTTP']:
-                test_runner = method_runner(target_name, test_parameters, target_history)
-                result = test_runner.run_test()
-                logging.debug('Test result = {}'.format(result))
+            test_runner = method_runner(target_name, test_parameters, target_history)
+            result = test_runner.run_test()
+            logging.debug('Test result = {}'.format(result))
 
-                if result:
-                    logging.info(test_runner.get_test_descriptive_result())
-                else:
-                    logging.error(test_runner.get_test_descriptive_result())
-                    nsp_alert_sender.send_alert(test_runner.get_test_descriptive_result())
-                    logging.debug('Sent the email alerts successfully')
+            if result:
+                logging.info(test_runner.get_test_descriptive_result())
+            else:
+                logging.error(test_runner.get_test_descriptive_result())
+                nsp_alert_sender.send_alert(test_runner.get_test_descriptive_result())
+                logging.debug('Sent the email alerts successfully')
 
-                # update history (in case of failure the stats might be empty and no update will be done)
-                test_stats = test_runner.get_test_stats()
-                if len(test_stats) > 0:
-                    method_dict = history.setdefault(method_name, dict())
-                    target_stats = method_dict.setdefault(target_name, list())
-                    target_stats.append(test_stats)
+            # update history (in case of failure the stats might be empty and no update will be done)
+            test_stats = test_runner.get_test_stats()
+            if len(test_stats) > 0:
+                method_dict = history.setdefault(method_name, dict())
+                target_stats = method_dict.setdefault(target_name, list())
+                target_stats.append(test_stats)
 
 
 def main(args):
