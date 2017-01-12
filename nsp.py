@@ -7,7 +7,7 @@ from enum import Enum
 
 from nsp_test_runners.dns_test_runner import DNSTestRunner
 from nsp_test_runners.http_test_runner import HTTPTestRunner
-from nsp_test_runners.nsp_alert_sender import NSPAlertSender
+from nsp_alert_sender import NSPAlertSender
 
 LOG_LINE_FORMAT = '%(asctime)s %(levelname)-8s %(message)s'
 LOG_LEVEL = logging.INFO
