@@ -5,10 +5,8 @@ import sys
 import json
 from enum import Enum
 
-from nsp_test_runners.abstract_test_runner import AbstractTestRunner
 from nsp_test_runners.dns_test_runner import DNSTestRunner
 from nsp_test_runners.http_test_runner import HTTPTestRunner
-from nsp_test_runners.https_test_runner import HTTPSTestRunner
 from nsp_test_runners.nsp_alert_sender import NSPAlertSender
 
 LOG_LINE_FORMAT = '%(asctime)s %(levelname)-8s %(message)s'
@@ -18,13 +16,11 @@ LOG_LEVEL = logging.DEBUG
 class MethodsEnum(Enum):
     DNS = 'DNS'
     HTTP = 'HTTP'
-    HTTPS = 'HTTPS'
 
 
 METHOD_RUNNERS_DICT = {
     MethodsEnum.DNS.value: DNSTestRunner,
-    MethodsEnum.HTTP.value: HTTPTestRunner,
-    MethodsEnum.HTTPS.value: HTTPSTestRunner
+    MethodsEnum.HTTP.value: HTTPTestRunner
 }
 
 

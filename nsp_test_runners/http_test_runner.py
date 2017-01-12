@@ -16,23 +16,26 @@ class HTTPFailureReason(Enum):
 class HTTPTestRunner(AbstractTestRunner):
 
     def _initialize(self):
-        self._ip_address = None
-        self._http_status = None
+        self._response = None
         self._failure_reason = None
 
     def _run_test(self):
 
         test_result = False
         parse_result = urlparse(self.target_name)
+
         try:
-            conn = http.client.HTTPConnection(parse_result.netloc)
+            http_connection_type = http.client.HTTPSConnection if parse_result.scheme == 'https' \
+                else http.client.HTTPConnection
+            conn = http_connection_type(parse_result.netloc)
             conn.request("GET", parse_result.path)
-            response = conn.getresponse()
-            self._http_status = response.status
+            self._response = conn.getresponse()
+
             if self._http_status > HTTP_STATUS_ERROR_OFFSET:
                 self._failure_reason = HTTPFailureReason.BAD_HTTP_STATUS
             else:
                 test_result = True
+
         except socket.gaierror:
             self._failure_reason = HTTPFailureReason.RESOLUTION_FAILED
         except:
@@ -52,3 +55,10 @@ class HTTPTestRunner(AbstractTestRunner):
         else:
             return 'Failed to connect to {} - Failure reason: {} (Response status: {})'.format(
                 self.target_name, self._failure_reason.value, self._http_status)
+
+    @property
+    def _http_status(self):
+        if self._response is None:
+            return None
+        else:
+            return self._response.status

@@ -50,14 +50,9 @@
             "latency_threshold": 1,
             "bandwidth_mbps_threshold": null
           }
-        }
-      ]
-    },
-    {
-      "method": "HTTPS",
-      "targets": [
+        },
         {
-          "target_name": "https://mysite.com/mygreatservice",
+          "target_name": "https://nsp.ua/index.html",
           "parameters": {
             "latency_threshold": 10,
             "bandwidth_mbps_threshold": 1
