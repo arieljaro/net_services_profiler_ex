@@ -1,7 +1,8 @@
 {
   "general": {
     "alert_email_targets": [
-      "arieljaro@gmail.com"
+      "arieljaro@gmail.com",
+      "your@email.com"
     ],
     "nsp_email_address": "nsp.alerts123@gmail.com",
     "nsp_email_pwd": "nspEmail123",
@@ -47,15 +48,23 @@
         {
           "target_name": "http://www.ynet.com/index.html",
           "parameters": {
-            "latency_threshold": 1,
-            "bandwidth_mbps_threshold": null
+            "latency_threshold": 1.5,
+            "bandwidth_threshold": null
           }
         },
         {
+          "target_name": "http://www.ynet.com/index.html",
+          "parameters": {
+            "latency_threshold": 1.5,
+            "bandwidth_threshold": null
+          }
+        },
+
+        {
           "target_name": "https://nsp.ua/index.html",
           "parameters": {
-            "latency_threshold": 10,
-            "bandwidth_mbps_threshold": 1
+            "latency_threshold": 1.5,
+            "bandwidth_threshold": 2
           }
         }
       ]

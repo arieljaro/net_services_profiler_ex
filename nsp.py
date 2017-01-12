@@ -10,7 +10,7 @@ from nsp_test_runners.http_test_runner import HTTPTestRunner
 from nsp_test_runners.nsp_alert_sender import NSPAlertSender
 
 LOG_LINE_FORMAT = '%(asctime)s %(levelname)-8s %(message)s'
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.INFO
 
 
 class MethodsEnum(Enum):
@@ -57,7 +57,7 @@ def run_tests(tests, history, nsp_alert_sender):
             except KeyError:
                 target_history = dict()
 
-            logging.info('Handling {} test on target {} with parameters {}'.format(
+            logging.debug('Handling {} test on target {} with parameters {}'.format(
                 method_name, target_name, test_parameters))
 
             if method_name in ['DNS', 'HTTP']:
@@ -67,18 +67,17 @@ def run_tests(tests, history, nsp_alert_sender):
 
                 if result:
                     logging.info(test_runner.get_test_descriptive_result())
-
-                    # update history
-                    test_stats = test_runner.get_test_stats()
-                    if len(test_stats) > 0:
-                        method_dict = history.setdefault(method_name, dict())
-                        target_stats = method_dict.setdefault(target_name, list())
-                        target_stats.append(test_stats)
-
                 else:
                     logging.error(test_runner.get_test_descriptive_result())
                     nsp_alert_sender.send_alert(test_runner.get_test_descriptive_result())
                     logging.debug('Sent the email alerts successfully')
+
+                # update history (in case of failure the stats might be empty and no update will be done)
+                test_stats = test_runner.get_test_stats()
+                if len(test_stats) > 0:
+                    method_dict = history.setdefault(method_name, dict())
+                    target_stats = method_dict.setdefault(target_name, list())
+                    target_stats.append(test_stats)
 
 
 def main(args):

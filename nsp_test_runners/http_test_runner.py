@@ -13,6 +13,8 @@ HTTP_STATUS_ERROR_OFFSET = 400
 class HTTPFailureReason(Enum):
     RESOLUTION_FAILED = 'dns resoultion failed'
     BAD_HTTP_STATUS = 'bad_http_status'
+    LATENCY_OVER_THRESHOLD = 'latency over threshold'
+    BANDWIDTH_OVER_THRESHOLD = 'bandwidth over threshold'
     UNEXPECTED_ERROR = 'unexpected error'
 
 
@@ -57,13 +59,31 @@ class HTTPTestRunner(AbstractTestRunner):
         self.test_result = test_result
 
     def _do_post_test_checks(self):
-        return True
+        latency_threshold = self.test_parameters.get('latency_threshold')
+        last_latency = self.test_history[-1]['latency']
+        if (latency_threshold is not None) and (self._latency > last_latency * latency_threshold):
+            self._failure_reason = HTTPFailureReason.LATENCY_OVER_THRESHOLD
+            self.test_result = False
+
+        bandwidth_threshold = self.test_parameters.get('bandwidth_threshold')
+        last_bandwidth = self.test_history[-1]['bandwidth']
+        if (bandwidth_threshold is not None) and (self._bandwidth > last_bandwidth * bandwidth_threshold):
+            self._failure_reason = HTTPFailureReason.BANDWIDTH_OVER_THRESHOLD
+            self.test_result = False
 
     def get_test_stats(self):
-        return {
-            'bandwidth': self._bandwidth,
-            'latency': self._latency
-        }
+        if self.test_result or self._has_failed_on_post_checks():
+            return {
+                'bandwidth': self._bandwidth,
+                'latency': self._latency
+            }
+
+        else:
+            return dict()
+
+    def _has_failed_on_post_checks(self):
+        return self._failure_reason in [HTTPFailureReason.LATENCY_OVER_THRESHOLD,
+                                        HTTPFailureReason.BANDWIDTH_OVER_THRESHOLD]
 
     def get_test_descriptive_result(self):
         if self.test_result:
@@ -71,8 +91,12 @@ class HTTPTestRunner(AbstractTestRunner):
                    '[Download bandwidth of {:.2f} KBps, latency of {:.2f} seconds]'.format(
                 self._connection_type, self.target_name, self._http_status, self._bandwidth, self._latency)
         else:
-            return 'Failed {} to connect to {} - Failure reason: {} (Response status: {})'.format(
+            failure_str = 'Failed {} to connect to {} - Failure reason: {} (Response status: {})'.format(
                 self._connection_type, self.target_name, self._failure_reason.value, self._http_status)
+            if self._has_failed_on_post_checks():
+                failure_str += ' [Download bandwidth of {:.2f} KBps, latency of {:.2f} seconds]'.format(
+                    self._bandwidth, self._latency)
+            return failure_str
 
     @property
     def _http_status(self):
