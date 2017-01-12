@@ -53,9 +53,9 @@
           }
         },
         {
-          "target_name": "http://www.ynet.com/index.html",
+          "target_name": "http://www.walla.co.il/",
           "parameters": {
-            "latency_threshold": 1.5,
+            "latency_threshold": 0.01,
             "bandwidth_threshold": null
           }
         },

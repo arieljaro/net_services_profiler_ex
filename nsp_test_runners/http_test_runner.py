@@ -60,6 +60,9 @@ class HTTPTestRunner(AbstractTestRunner):
 
     def _do_post_test_checks(self):
         latency_threshold = self.test_parameters.get('latency_threshold')
+        if len(self.test_history) == 0:
+            return
+
         last_latency = self.test_history[-1]['latency']
         if (latency_threshold is not None) and (self._latency > last_latency * latency_threshold):
             self._failure_reason = HTTPFailureReason.LATENCY_OVER_THRESHOLD
