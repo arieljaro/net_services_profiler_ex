@@ -56,7 +56,7 @@ def run_tests(tests, history, nsp_alert_sender):
             logging.info('Handling {} test on target {} with parameters {}'.format(
                 method_name, target_name, test_parameters))
 
-            if method_name == 'DNS':
+            if method_name in ['DNS', 'HTTP']:
                 test_runner = method_runner(target_name, test_parameters, target_history)
                 result = test_runner.run_test()
                 logging.debug('Test result = {}'.format(result))

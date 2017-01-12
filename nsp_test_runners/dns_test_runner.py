@@ -6,7 +6,7 @@ from nsp_test_runners.abstract_test_runner import AbstractTestRunner
 
 class DNSFailureReason(Enum):
     RESOLUTION_FAILED = 'dns resoultion failed'
-    OTHER_REASON = 'other reason'
+    UNEXPECTED_ERROR = 'unexpected error'
 
 
 class DNSTestRunner(AbstractTestRunner):
@@ -24,7 +24,7 @@ class DNSTestRunner(AbstractTestRunner):
         except socket.gaierror:
             self._failure_reason = DNSFailureReason.RESOLUTION_FAILED
         except Exception as e:
-            self._failure_reason = DNSFailureReason.OTHER_REASON
+            self._failure_reason = DNSFailureReason.UNEXPECTED_ERROR
 
         self.test_result = test_result
 

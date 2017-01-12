@@ -35,6 +35,21 @@
             "latency_threshold": 1,
             "bandwidth_mbps_threshold": null
           }
+        },
+        {
+          "target_name": "http://fdkdfjldk;/getmyfile",
+          "parameters": {
+            "latency_threshold": 1,
+            "bandwidth_mbps_threshold": null
+          }
+        },
+
+        {
+          "target_name": "http://www.ynet.com/index.html",
+          "parameters": {
+            "latency_threshold": 1,
+            "bandwidth_mbps_threshold": null
+          }
         }
       ]
     },

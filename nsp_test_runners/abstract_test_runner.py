@@ -6,6 +6,8 @@ class AbstractTestRunner(object):
         self.test_history = target_history
         self.test_result = None
 
+        self._initialize()
+
         # instantiating AbstractTestRunner is forbidden
         if type(self) == AbstractTestRunner:
             raise NotImplementedError()
